@@ -4,38 +4,58 @@ This project aimed to build a predictive model to identify customers at risk of 
 
 ## Areas We Have Worked On
 **Comprehensive Data Analysis:** Analysis of customer records with 25 features to understand patterns.
+
 **Multiple ML Models:** Comparison of Logistic Regression, Random Forest, Decision Tree, and SVC for churn prediction.
+
 **Feature Importance Analysis:** Identification of key drivers of customer churn to guide business strategies.
+
 **Production-Ready Prediction Function:** Developed a function for real-time churn predictions.
+
 **Business Insights:** Provided actionable recommendations to reduce churn based on model findings.
+
 
 ## Dataset
 **Source**: Kaggle - Telco Customer Churn (https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
+
 **Dataset File:** telco_churn.csv
+
 **Records:** 7,395 customers (before duplicate removal, 7,253 unique records after cleaning).
+
 **Features:** 21 (including 20 predictors and 1 target variable Churn).
+
 **Target Variable:** Churn (0 = Not Churned, 1 = Churned).
+
 
 ## Features Include:
 **Customer Demographics**: gender, SeniorCitizen.
+
 **Account Information:** Partner, Dependents, Contract, PaperlessBilling, PaymentMethod.
+
 **Service Information:** PhoneService, MultipleLines, InternetService, OnlineSecurity, OnlineBackup, DeviceProtection, TechSupport, StreamingTV, StreamingMovies.
+
 **Usage and Billing:** tenure, MonthlyCharges, TotalCharges.
 
 ## Data Preprocessing & Cleaning
 **Data Loading:** The telco_churn.csv dataset was loaded, containing 7395 records and 21 features.
+
 **Missing Values:** Missing values were identified in TotalCharges (1.23%), MonthlyCharges (1.14%), tenure (0.99%), and Contract (0.96%). Numerical features were imputed using the median, and categorical features using the mode.
+
 **Duplicates:** 131 duplicate rows were identified and removed, reducing the dataset to 7253 unique records.
+
 **Outlier Treatment:** Outliers in numerical features (MonthlyCharges, tenure, TotalCharges) were capped using the IQR method to prevent extreme values from skewing model training.
 
 ## Data Transformation
 **Feature Engineering:** The customerID column was dropped as it's not a predictive feature.
+
 **Encoding:** Binary categorical features (gender, Partner, Dependents, PhoneService, PaperlessBilling, Churn) were mapped to numerical (0/1). Other multi-class categorical features were one-hot encoded (pd.get_dummies with drop_first=True).
+
 **Feature Scaling:** Numerical features (SeniorCitizen, tenure, MonthlyCharges, TotalCharges) were standardized using StandardScaler to ensure all features contribute equally to the model.
 
 ## Exploratory Data Analysis (EDA) Highlights
 **Churn Distribution:** The dataset shows an imbalanced class distribution with approximately 26.43% of customers churning.
+
 **Correlation Analysis:** Key features positively correlated with churn include InternetService_Fiber optic, PaymentMethod_Electronic check, MonthlyCharges, PaperlessBilling, and SeniorCitizen. Features negatively correlated (reducing churn likelihood) include tenure, Contract_Two year, OnlineSecurity_Yes, and TechSupport_Yes.
+
 **Categorical & Numerical Analysis:** Visualizations confirmed these correlations, showing higher churn rates among customers with fiber optic internet, electronic check payment, month-to-month contracts, and shorter tenure.
 
 ## Feature Selection
@@ -45,9 +65,13 @@ This project aimed to build a predictive model to identify customers at risk of 
 We explored several classification algorithms to predict churn:
 
 Logistic Regression (LR): A linear model known for its interpretability.
+
 Random Forest Classifier (RF): An ensemble method providing robust predictions and feature importance.
+
 Decision Tree Classifier (DT): A tree-based model useful for understanding decision paths.
+
 Support Vector Classifier (SVC): A powerful model for complex decision boundaries.
+
 Each model was trained on the X_train and y_train sets and evaluated on X_test and y_test. Key performance metrics such as Accuracy, Precision, Recall, F1-Score, and Area Under the Receiver Operating Characteristic Curve (AUC) were calculated and visualized through classification reports, confusion matrices, and ROC curves. The initial comparison revealed that Logistic Regression achieved the highest AUC score of 0.8406, indicating its superior ability to distinguish between churned and non-churned customers.
 
 | Model               | Accuracy | Precision | Recall | F1-Score | AUC      |
@@ -59,7 +83,9 @@ Each model was trained on the X_train and y_train sets and evaluated on X_test a
 
 ## Model Optimization & Re-evaluation
 *   **Hyperparameter Tuning:** `GridSearchCV` was applied to the best-performing model, Logistic Regression, to optimize its hyperparameters. The tuning focused on `penalty`, `C`, and `solver` parameters, using 5-fold cross-validation and `roc_auc` as the scoring metric.
+
 *   **Optimized Logistic Regression:** The optimized model achieved an improved cross-validation AUC score.
+
 ### Re-evaluated Model Comparison
 After optimizing the Logistic Regression model using `GridSearchCV`, we re-evaluated all models to see the impact of hyperparameter tuning and confirm the best-performing model. The updated comparison table is shown below:
 
