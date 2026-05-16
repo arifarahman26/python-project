@@ -28,7 +28,7 @@ This project aimed to build a predictive model to identify customers at risk of 
 **Duplicates:** 131 duplicate rows were identified and removed, reducing the dataset to 7253 unique records.
 **Outlier Treatment:** Outliers in numerical features (MonthlyCharges, tenure, TotalCharges) were capped using the IQR method to prevent extreme values from skewing model training.
 
-## Data Transformation**
+## Data Transformation
 **Feature Engineering:** The customerID column was dropped as it's not a predictive feature.
 **Encoding:** Binary categorical features (gender, Partner, Dependents, PhoneService, PaperlessBilling, Churn) were mapped to numerical (0/1). Other multi-class categorical features were one-hot encoded (pd.get_dummies with drop_first=True).
 **Feature Scaling:** Numerical features (SeniorCitizen, tenure, MonthlyCharges, TotalCharges) were standardized using StandardScaler to ensure all features contribute equally to the model.
@@ -41,8 +41,14 @@ This project aimed to build a predictive model to identify customers at risk of 
 ## Feature Selection
 **Recursive Feature Elimination (RFE):** RFE with a Logistic Regression estimator was used to select the most relevant features. 15 features were selected for model training, including tenure, TotalCharges, InternetService_Fiber optic, and various service and contract types.
 
-## Model Building & Evaluation
-The dataset was split into training (80%) and testing (20%) sets, stratified to maintain the churn class distribution:
+## Model Development & Justification & Initial Evaluation
+We explored several classification algorithms to predict churn:
+
+Logistic Regression (LR): A linear model known for its interpretability.
+Random Forest Classifier (RF): An ensemble method providing robust predictions and feature importance.
+Decision Tree Classifier (DT): A tree-based model useful for understanding decision paths.
+Support Vector Classifier (SVC): A powerful model for complex decision boundaries.
+Each model was trained on the X_train and y_train sets and evaluated on X_test and y_test. Key performance metrics such as Accuracy, Precision, Recall, F1-Score, and Area Under the Receiver Operating Characteristic Curve (AUC) were calculated and visualized through classification reports, confusion matrices, and ROC curves. The initial comparison revealed that Logistic Regression achieved the highest AUC score of 0.8406, indicating its superior ability to distinguish between churned and non-churned customers.
 
 | Model               | Accuracy | Precision | Recall | F1-Score | AUC      |
 | :------------------ | :------- | :-------- | :----- | :------- | :------- |
@@ -51,10 +57,28 @@ The dataset was split into training (80%) and testing (20%) sets, stratified to 
 | SVC                 | 0.8036   | 0.6868    | 0.4740 | 0.5609   | 0.7890   |
 | Decision Tree       | 0.7540   | 0.5405    | 0.4688 | 0.5021   | 0.7498   |
 
-## Model Optimization
-
+## Model Optimization & Re-evaluation
 *   **Hyperparameter Tuning:** `GridSearchCV` was applied to the best-performing model, Logistic Regression, to optimize its hyperparameters. The tuning focused on `penalty`, `C`, and `solver` parameters, using 5-fold cross-validation and `roc_auc` as the scoring metric.
 *   **Optimized Logistic Regression:** The optimized model achieved an improved cross-validation AUC score.
+### Re-evaluated Model Comparison
+After optimizing the Logistic Regression model using `GridSearchCV`, we re-evaluated all models to see the impact of hyperparameter tuning and confirm the best-performing model. The updated comparison table is shown below:
+
+```
+                        Model  Accuracy  Precision    Recall  F1-Score      AUC
+Logistic Regression_Optimized  0.800138   0.647799  0.536458  0.586895 0.845201
+          Logistic Regression  0.799449   0.646688  0.533854  0.584879 0.840624
+                Random Forest  0.773949   0.591503  0.471354  0.524638 0.802160
+                          SVC  0.803584   0.686792  0.473958  0.560863 0.788998
+                Decision Tree  0.753963   0.540541  0.468750  0.502092  0.749768
+```
+
+#### Key Observations:
+
+*   **Optimized Logistic Regression Leads the Pack**: The `Logistic Regression_Optimized` model now stands out as the best performer, achieving an AUC score of **0.8452**. This is an improvement over the initial Logistic Regression model's AUC of 0.8406, demonstrating the effectiveness of hyperparameter tuning.
+*   **Marginal Improvement in Other Metrics**: Alongside the AUC increase, the optimized Logistic Regression also shows slight improvements in Accuracy (0.8001), Precision (0.6478), Recall (0.5365), and F1-Score (0.5869) compared to its unoptimized counterpart.
+*   **Consistent Ranking**: While the absolute scores changed slightly for Logistic Regression, the relative ranking of the other models (Random Forest, SVC, Decision Tree) remained consistent, with Random Forest being the next best in terms of AUC.
+
+This re-evaluation confirms that the optimized Logistic Regression model is the most robust and accurate choice for predicting customer churn in this dataset, balancing precision and recall effectively, and providing the highest discriminative power as indicated by its AUC score.
 
 ## Best Model
 
